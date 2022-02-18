@@ -357,6 +357,7 @@ mod self_named_constructors;
 mod semicolon_if_nothing_returned;
 mod serde_api;
 mod shadow;
+mod significant_drop_in_scrutinee;
 mod single_char_lifetime_names;
 mod single_component_path_imports;
 mod size_of_in_element_count;
@@ -859,6 +860,7 @@ pub fn register_plugins(store: &mut rustc_lint::LintStore, sess: &Session, conf:
     store.register_late_pass(move || Box::new(manual_bits::ManualBits::new(msrv)));
     store.register_late_pass(|| Box::new(default_union_representation::DefaultUnionRepresentation));
     store.register_late_pass(|| Box::new(only_used_in_recursion::OnlyUsedInRecursion));
+    store.register_late_pass(|| Box::new(significant_drop_in_scrutinee::SignificantDropInScrutinee));
     store.register_late_pass(|| Box::new(dbg_macro::DbgMacro));
     let cargo_ignore_publish = conf.cargo_ignore_publish;
     store.register_late_pass(move || {
@@ -868,6 +870,7 @@ pub fn register_plugins(store: &mut rustc_lint::LintStore, sess: &Session, conf:
     });
     store.register_early_pass(|| Box::new(crate_in_macro_def::CrateInMacroDef));
     store.register_early_pass(|| Box::new(empty_structs_with_brackets::EmptyStructsWithBrackets));
+    store.register_late_pass(|| Box::new(significant_drop_in_scrutinee::StaticLifetimeInScrutinee));
     // add lints here, do not remove this comment, it's used in `new_lint`
 }
 
